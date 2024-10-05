@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash or Pass - VTuber Edition</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            background-image: url('https://t3.ftcdn.net/jpg/06/27/85/70/360_F_627857017_5r2FsJYJeZfufqiXcUvKCENF3fz4xFyg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 0vh;
+            width: 100%;
+            transform: scale(0.8); /* Skaliert die gesamte Container-Größe um 20 % */
+
+            margin-bottom: 50px;
+
+            animation: fadeIn 1s ease;
+        }
+
+        .side-list {
+            width: 20%;
+            height: 800px;
+            margin-top: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .side-list h3 {
+            margin-bottom: 10px;
+        }
+
+        .side-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .side-list ul li {
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #3498db;
+            text-decoration: underline;
+        }
+
+        .side-list ul li:hover {
+            color: #2980b9;
+        }
+
+        .app {
+            text-align: center;
+            background-color: #fff;
+            padding: 40px;
+            margin-top: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+            border-radius: 20px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+            width: 350px;
+
+            transition: transform 0.3s ease;
+        }
+
+        .app:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-card {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            height: 600px;
+        }
+
+        .profile-image {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-card h2 {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            color: #333;
+        }
+
+        .profile-card p {
+            font-size: 0.6rem;
+            color: #777;
+            margin: 10px 0;
+        }
+
+        .profile-card a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #3498db;
+            transition: color 0.2s ease;
+        }
+
+        .profile-card a:hover {
+            color: #2980b9;
+        }
+
+        .buttons-container {
+            margin-top: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 45%;
+            transition: background-color 0.3s ease;
+        }
+
+        .pass {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .pass:hover {
+            background-color: #c0392b;
+        }
+
+        .smash {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .smash:hover {
+            background-color: #27ae60;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            background-color: #ddd;
+            color: #aaa;
+        }
+        button:disabled:hover {
+            background-color: #ddd;
+        }
+        #weiter-btn {
+            background-color: #3498db;
+            color: white;
+            width: 100%;
+        }
+
+        #stats-btn {
+            background-color: #3498db;
+            color: white;
+            margin-top: 20px;
+
+            border-radius: 30px;
+            padding: 12px;
+
+        }
+
+        #stats-btn:hover {
+            background-color: #2980b9;
+        }
+
+        #stats-btn:disabled {
+            cursor: not-allowed;
+            background-color: #ddd;
+            color: #aaa;
+        }
+
+        .report {
+            background-color: #f39c12;
+            color: white;
+            margin-top: 20px;
+
+            border-radius: 30px;
+            padding: 12px;
+        }
+
+        .report:hover {
+            background-color: #e67e22;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 500px;
+            text-align: left;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover, .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .submit-error {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            width: 45%;
+        }
+
+        .submit-error:hover {
+            background-color: #c0392b;
+        }
+
+        #submit-error-non-existing {
+            background-color: rgba(135, 7, 255, 0.84);
+        }
+
+        #submit-error-non-existing:hover {
+            background-color: rgba(135, 7, 255, 0.7);
+        }
+
+        #submit-error-wrong_name {
+            background-color: rgba(255, 7, 7, 0.84);
+        }
+
+        #submit-error-wrong_name:hover {
+            background-color: rgba(255, 7, 7, 0.7);
+        }
+
+        #submit-error-wrong_image {
+            background-color: rgba(0, 133, 0, 0.84);
+        }
+
+        #submit-error-wrong_image:hover {
+            background-color: rgba(0, 133, 0, 0.7);
+        }
+
+        #submit-error-wrong_description {
+            background-color: rgba(0, 0, 113, 0.84);
+        }
+
+        #submit-error-wrong_description:hover {
+            background-color: rgba(7, 7, 255, 0.7);
+        }
+
+        #submit-error-wrong_link {
+            background-color: rgba(230, 141, 0, 0.84);
+        }
+
+        #submit-error-wrong_link:hover {
+            background-color: rgba(255, 165, 7, 0.7);
+        }
+
+        #submit-error-other {
+            background-color: rgba(3, 117, 117, 0.84);
+        }
+
+        #submit-error-other:hover {
+            background-color: rgba(3, 117, 117, 0.7);
+        }
+
+
+
+        textarea {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #vtuber-description {
+            font-size: 12px;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+
+        }
+        #loading-gif {
+            position: fixed; /* Positioniert das GIF relativ zum Viewport */
+            bottom: 20px; /* Abstand vom unteren Bildschirmrand */
+            right: 20px; /* Abstand vom rechten Bildschirmrand */
+            width: 300px; /* Breite des GIFs */
+            height: 300px; /* Höhe des GIFs */
+        }
+
+        #stats-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #close-btn2 {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        #close-btn2:hover, #close-btn2:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+
+
+
+    </style>
+</head>
+<body>
+<div id="loading">
+    <h1>Vtuber Smash or Pass Game (BETA)</h1>
+    <p>Hinweis: Dieses Spiel ist noch in der Entwicklung. Bitte melden Sie Fehler an (Discord: gw75)</p>
+    <p>Das Game enthält aktuell <strong> 445 </strong> VTuber Profile</p>
+
+</div>
+<img src="https://media.tenor.com/NvV1-IMptKYAAAAi/loading-anime.gif" alt="Loading..." id="loading-gif">
+
+
+<div class="container" style="margin-bottom: 20px; display: none">
+    <div class="side-list" id="pass-list">
+        <h3>Pass List</h3>
+        <ul id="pass-items"></ul>
+    </div>
+
+    <div class="app">
+        <div id="profile-card" class="profile-card">
+            <img id="vtuber-image" src="loading.gif" alt="VTuber" class="profile-image">
+            <h2 id="vtuber-name">Lade profil...</h2>
+            <p id="vtuber-description"></p>
+            <a id="vtuber-link" href="" target="_blank">Visit on Twitch</a>
+        </div>
+
+        <div class="buttons-container">
+            <div class="buttons">
+                <button id="pass-btn" class="pass">Pass</button>
+                <button id="smash-btn" class="smash">Smash</button>
+                <button id="weiter-btn" class="weiter" style="display: none">Weiter Spielen</button>
+
+            </div>
+            <div class="buttons">
+                <button id="report-btn" class="report">Fehler melden</button>
+                <button id="stats-btn">Profil Statistik</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="side-list" id="smash-list">
+        <h3>Smash List</h3>
+        <ul id="smash-items"></ul>
+    </div>
+
+
+</div>
+
+<div id="report-modal" class="modal">
+    <div class="modal-content">
+        <span id="close-btn" class="close">&times;</span>
+        <h3>Fehler melden</h3>
+        <button id="submit-error-non-existing" class="submit-error">VTuber existiert nicht mehr</button>
+        <button id="submit-error-wrong_name" class="submit-error">Falscher Name</button>
+        <button id="submit-error-wrong_image" class="submit-error">Falsches Bild</button>
+        <button id="submit-error-wrong_description" class="submit-error">Falsche Beschreibung</button>
+        <button id="submit-error-wrong_link" class="submit-error">Falscher Link</button>
+        <button id="submit-error-other" class="submit-error">Anderer Fehler</button>
+    </div>
+</div>
+
+<div id="stats-modal" class="modal" style="display: none">
+    <div class="modal-content">
+        <span id="close-btn2" class="close">&times;</span>
+        <h3>Profil Statistik</h3>
+        <p>Profil: <span id="profile-name">-</span></p>
+        <p>Likes: <span id="likes">0</span></p>
+        <p>Passes: <span id="passes">0</span></p>
+        <p>Viewed: <span id="viewed">0</span></p>
+    </div>
+</div>
+<script>
+  let loading = document.getElementById('loading');
+    let container = document.querySelector('.container');
+  let vtubers;
+
+  let timeouttime = 100;
+  const fastClickTimeout = 1500; //
+  const normalTimeoutTime = 1; // Normale Ladezeit (100ms)
+  let lodestatus = 0;
+  let timeouted_count = 0;
+  let loadedlock = false;
+  let loadedimg = 0;
+
+
+  let lastClickTime = 0;
+  let clickCount = 0;
+  // Hilfsfunktion, um eine zufällige, unbesuchte Index auszuwählen
+  function getRandomIndex() {
+
+
+      if (smashIndices.size === vtubers.length) {
+          return -1;
+      }
+      return Math.floor(Math.random() * vtubers.length);
+  }
+
+  let viewedIndices = new Set();
+  let smashIndices = new Set();
+
+  async function load() {
+      const response = await fetch('vtuber.json');
+      const data = await response.json();
+      vtubers = data;
+      // check url params
+      const urlParams = new URLSearchParams(window.location.search);
+      const vtuberName = urlParams.get('vtuber');
+      console.log("%c==============================================" + "VTuber Smash or Pass Game" + "============================================\n" +
+          "🎮 Developed by: @gameware75\n" +
+          "📝 VTUber Database by: @gameware75 + beautv\n" +
+          "📦 Total VTubers: " + vtubers.length + "\n" +
+
+          "======================================================================================================================", "font-size: 20px");
+
+
+      if (vtuberName) {
+          const profile = vtubers.find(profile => profile.name.toLowerCase() === vtuberName.toLowerCase());
+          if (profile) {
+              loadSpecificProfile(profile);
+              return;
+          } else {
+              alert('Das angeforderte Profil wurde nicht gefunden.');
+          }
+      } else {
+          loadProfile();
+      }
+
+      // lade im hintergrund alle profil bilder
+        vtubers.forEach(profile => {
+            const img = new Image();
+            img.src = profile.image;
+
+            // wenn das bild geladen ist, wird der Fortschritt erhöht
+            img.onload = () => {
+                lodestatus = lodestatus + (1/445);
+                loadedimg = loadedimg + 1;
+                loadpercentage = Math.round(lodestatus * 10000);
+                loadpercentage = loadpercentage / 100;
+                console.log("Lade Fortschritt: " + loadpercentage + "%" + " (" + loadedimg + " / 445)");
+            }
+
+
+
+        });
+
+
+
+  }
+
+      load();
+
+
+
+  const imageElement = document.getElementById('vtuber-image');
+  const nameElement = document.getElementById('vtuber-name');
+  const descriptionElement = document.getElementById('vtuber-description');
+  const linkElement = document.getElementById('vtuber-link');
+
+  function loadProfile() {
+      let randomIndex;
+
+      do {
+          randomIndex = getRandomIndex();
+      } while (smashIndices.has(vtubers[randomIndex]));
+
+
+      console.log(
+          `========= VTuber Profile Loaded =========\n` +
+          `🎤 Name       : ${vtubers[randomIndex].name}\n` +
+          `📝 Description: ${vtubers[randomIndex].description}\n` +
+          `🖼  Image      : ${vtubers[randomIndex].image}\n` +
+          `🎮 Twitch     : ${vtubers[randomIndex].twitch}\n` +
+          `========================================`
+      );
+
+
+      if (randomIndex !== -1) {
+          const profile = vtubers[randomIndex];
+          imageElement.src = profile.image;
+          nameElement.textContent = profile.name;
+          viewedIndices.delete(randomIndex);
+          viewedIndices.add(randomIndex);
+          descriptionElement.textContent = profile.description;
+          linkElement.href = profile.twitch;
+          linkElement.style.display = 'block';
+
+          document.getElementById('pass-btn').disabled = false;
+          document.getElementById('smash-btn').disabled = false;
+          document.getElementById('report-btn').disabled = false;
+          document.getElementById('stats-btn').disabled = false;
+          loadedlock = false;
+
+      } else {
+          document.getElementById('pass-btn').disabled = true;
+          document.getElementById('smash-btn').disabled = true;
+          document.getElementById('report-btn').disabled = true;
+            document.getElementById('stats-btn').disabled = true;
+
+
+          imageElement.src = "loading.gif";
+          nameElement.textContent = 'Keine weiteren Profile verfügbar';
+          descriptionElement.textContent = 'Sie haben alle Profile durchgesehen. Vielen Dank fürs Spielen!';
+          linkElement.style.display = 'none';
+      }
+  }
+
+  let likedProfiles = [];
+  let passedProfiles = [];
+
+  function addToList(profile, listId) {
+      const listItem = document.createElement('li');
+      listItem.textContent = profile.name;
+      listItem.addEventListener('click', () => {
+          if (loadedlock === false) {
+          loadSpecificProfile(profile);
+            }
+      });
+      document.getElementById(listId).appendChild(listItem);
+  }
+
+
+
+  function loadSpecificProfile(profile) {
+
+
+      imageElement.src = profile.image;
+      nameElement.textContent = profile.name;
+      descriptionElement.textContent = profile.description;
+      linkElement.href = profile.twitch;
+      document.getElementById('pass-btn').style.display = 'none';
+      document.getElementById('smash-btn').style.display = 'none';
+      document.getElementById('weiter-btn').style.display = 'block';
+      document.getElementById('weiter-btn').addEventListener('click', () => {
+          document.getElementById('pass-btn').style.display = 'block';
+          document.getElementById('smash-btn').style.display = 'block';
+          document.getElementById('weiter-btn').style.display = 'none';
+          loadProfile();
+      });
+
+  }
+
+  function nextProfile(smash) {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      // profiel add to list smahesd
+      smashIndices.add(currentProfile);
+
+      if (smash) {
+          likedProfiles.push(currentProfile);
+          addToList(currentProfile, 'smash-items');
+          console.log("%cVtuber: " + currentProfile.name + " Smashed 🔥 ", "color: gold")
+          console.log("\n\n")
+      } else {
+          passedProfiles.push(currentProfile);
+          addToList(currentProfile, 'pass-items');
+          console.log("%cVtuber: " + currentProfile.name + " Passed ❌ ", "color: red")
+          console.log("\n\n")
+      }
+
+      imageElement.src = "loading.gif";
+      linkElement.href = '';
+      linkElement.style.display = 'none';
+      nameElement.textContent = 'Lade profil...';
+      descriptionElement.textContent = 'Das nächste Profil wird geladen. Bitte haben Sie einen Moment Geduld.';
+      document.getElementById('pass-btn').disabled = true;
+      document.getElementById('smash-btn').disabled = true;
+      document.getElementById('report-btn').disabled = true;
+      document.getElementById('stats-btn').disabled = true;
+        loadedlock = true;
+
+      // Logik, um schnelle Klicks zu verhindern
+      const now = Date.now();
+      const timeSinceLastClick = now - lastClickTime;
+
+      if (timeSinceLastClick < 400) {
+          clickCount++;
+      } else {
+          clickCount = 1;
+      }
+
+      lastClickTime = now;
+
+      let timeoutTime = normalTimeoutTime;
+      document.getElementById('loading-gif').style.display = 'block';
+      if (clickCount >= 3) {
+          timeouted_count++;
+
+
+          imageElement.src = "https://cdn3.emoji.gg/emojis/3715_baka.png?v=1";
+          nameElement.textContent = 'You are too fast! Baka!';
+          if (timeouted_count >= 10) {
+              timeoutTime = Math.floor(Math.random() * 1000) + 1000 + 10 * 500;
+
+          } else {
+              timeoutTime = Math.floor(Math.random() * 1000) + 1000 + timeouted_count * 500;
+          }
+
+          console.warn('Fast click detected. Timeout for ' + timeoutTime + 'ms' + ' (Timeouted count: ' + timeouted_count + ')');
+          tim_in_sec = timeoutTime / 1000;
+          tim_in_sec = tim_in_sec.toFixed(1);
+
+          document.getElementById('vtuber-description').textContent = 'Sie bewerten zu schnell. Bitte warten Sie ' + tim_in_sec + ' Sekunden.';
+      }
+
+
+      setTimeout(() => {
+          loadProfile();
+            document.getElementById('loading-gif').style.display = 'none';
+      }, timeoutTime);
+  }
+
+  document.getElementById('pass-btn').addEventListener('click', () => nextProfile(false));
+  document.getElementById('smash-btn').addEventListener('click', () => nextProfile(true));
+
+  // Modal für Fehler melden
+  document.getElementById('report-btn').addEventListener('click', () => {
+      document.getElementById('report-modal').style.display = 'flex';
+  });
+
+  document.getElementById('stats-btn').addEventListener('click', () => {
+      alert('Diese Funktion ist bald verfügbar.');
+  });
+
+  document.getElementById('close-btn').addEventListener('click', () => {
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+    document.getElementById('close-btn2').addEventListener('click', () => {
+        document.getElementById('stats-modal').style.display = 'none';
+    });
+
+
+  document.getElementById("submit-error-wrong_name").addEventListener('click', () => {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      console.info('Fehler gemeldet: ' + currentProfile.name + ' - Falscher Name');
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+  document.getElementById("submit-error-wrong_image").addEventListener('click', () => {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      console.info('Fehler gemeldet: ' + currentProfile.name + ' - Falsches Bild');
+      mobile = !!(navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i));
+      fetch('https://api.gw75.de/vtuber-smash-or-pass/report/vtuber/image/' + currentProfile.name, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Mobil': mobile
+          }
+      });
+
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+  document.getElementById("submit-error-wrong_description").addEventListener('click', () => {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      console.info('Fehler gemeldet: ' + currentProfile.name + ' - Falsche Beschreibung');
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+  document.getElementById("submit-error-wrong_link").addEventListener('click', () => {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      console.info('Fehler gemeldet: ' + currentProfile.name + ' - Falscher Link');
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+  document.getElementById("submit-error-non-existing").addEventListener('click', () => {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      console.info('Fehler gemeldet: ' + currentProfile.name + ' - VTuber existiert nicht mehr');
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+  document.getElementById("submit-error-other").addEventListener('click', () => {
+      const currentProfile = vtubers[Array.from(viewedIndices).pop()]; // Das letzte hinzugefügte Profil
+      console.info('Fehler gemeldet: ' + currentProfile.name + ' - Anderer Fehler');
+      document.getElementById('report-modal').style.display = 'none';
+  });
+
+
+
+
+
+
+
+  // Schließt das Modal, wenn außerhalb des Inhalts geklickt wird
+  window.onclick = function(event) {
+      if (event.target == document.getElementById('report-modal')) {
+          document.getElementById('report-modal').style.display = 'none';
+      }
+  }
+
+  function loadings() {
+
+
+
+
+        // überprüfen, ob das Spiel geladen ist
+        if (lodestatus >= 0.999) {
+            loading.style.display = 'none';
+            container.style.display = 'flex';
+            document.getElementById('loading-gif').style.display = 'none';
+        } else {
+            setTimeout(loadings, 500);
+        }
+    }
+    setTimeout(loadings, 3000);
+
+</script>
+</body>
+</html>
