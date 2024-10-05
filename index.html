@@ -496,6 +496,19 @@
       const response = await fetch('vtuber.json');
       const data = await response.json();
       vtubers = data;
+      // lade im hintergrund alle profil bilder
+      vtubers.forEach(profile => {
+          const img = new Image();
+          img.src = profile.image;
+
+          // wenn das bild geladen ist, wird der Fortschritt erhöht
+          img.onload = () => {
+              lodestatus = lodestatus + (1/445);
+              loadedimg = loadedimg + 1;
+              loadpercentage = Math.round(lodestatus * 10000);
+              loadpercentage = loadpercentage / 100;
+              console.log("Lade Fortschritt: " + loadpercentage + "%" + " (" + loadedimg + " / 445)");
+          }
       // check url params
       const urlParams = new URLSearchParams(window.location.search);
       const vtuberName = urlParams.get('vtuber');
@@ -519,19 +532,7 @@
           loadProfile();
       }
 
-      // lade im hintergrund alle profil bilder
-        vtubers.forEach(profile => {
-            const img = new Image();
-            img.src = profile.image;
 
-            // wenn das bild geladen ist, wird der Fortschritt erhöht
-            img.onload = () => {
-                lodestatus = lodestatus + (1/445);
-                loadedimg = loadedimg + 1;
-                loadpercentage = Math.round(lodestatus * 10000);
-                loadpercentage = loadpercentage / 100;
-                console.log("Lade Fortschritt: " + loadpercentage + "%" + " (" + loadedimg + " / 445)");
-            }
 
 
 
